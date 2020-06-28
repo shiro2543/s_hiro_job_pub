@@ -1,0 +1,122 @@
+LZSS Test
+input string: jdkjdkjdkjdk
+
+sw: 
+sw idx: 0
+orgTarget: j
+resultdata: 0,
+head: 0
+idx: -1
+
+ˆê’v‚È‚µAorgtargetˆê•¶š
+
+sw: j
+sw idx: 0
+orgTarget: d
+resultdata: 0,j,
+head: -1
+idx: -1
+
+ˆê’v‚È‚µAorgtargetˆê•¶š
+
+sw: jd
+sw idx: 0
+orgTarget: k
+resultdata: 0,j,d,
+head: -1
+idx: -1
+
+ˆê’v‚È‚µAorgtargetˆê•¶š
+
+sw: jdk
+sw idx: 0
+orgTarget: j
+resultdata: 0,j,d,k,
+head: -1
+idx: 0
+
+ˆê’v‚ ‚è
+‚»‚êˆÈŠO‚Ì‚Æ‚«
+
+sw: jdk
+sw idx: 0
+orgTarget: jd
+resultdata: 0,j,d,k,
+head: 0
+idx: 0
+
+ˆê’v‚ ‚è
+‚»‚êˆÈŠO‚Ì‚Æ‚«
+
+sw: jdk
+sw idx: 0
+orgTarget: jdk
+resultdata: 0,j,d,k,
+head: 0
+idx: 0
+
+ˆê’v‚ ‚è
+‚»‚êˆÈŠO‚Ì‚Æ‚«
+
+sw: jdk
+sw idx: 0
+orgTarget: jdkj
+resultdata: 0,j,d,k,
+head: 0
+idx: -1
+
+ˆê’v‚È‚µAorgtarget2•¶šˆÈã
+‚©‚ÂAorgtarget‚ªlimit‚æ‚è’Z‚¢‚Æ‚«
+
+sw: jdkj
+sw idx: 0
+orgTarget: jd
+resultdata: 0,j,d,k,j,d,k,
+head: -1
+idx: 0
+
+ˆê’v‚ ‚è
+‚»‚êˆÈŠO‚Ì‚Æ‚«
+
+sw: jdkj
+sw idx: 0
+orgTarget: jdk
+resultdata: 0,j,d,k,j,d,k,
+head: 0
+idx: 0
+
+ˆê’v‚ ‚è
+‚»‚êˆÈŠO‚Ì‚Æ‚«
+
+sw: jdkj
+sw idx: 0
+orgTarget: jdkj
+resultdata: 0,j,d,k,j,d,k,
+head: 0
+idx: 0
+
+ˆê’v‚ ‚è
+‚»‚êˆÈŠO‚Ì‚Æ‚«
+
+sw: jdkj
+sw idx: 0
+orgTarget: jdkjd
+resultdata: 0,j,d,k,j,d,k,
+head: 0
+idx: -1
+
+ˆê’v‚È‚µAorgtarget2•¶šˆÈã
+‚©‚ÂAorgtarget‚ªlimit‚æ‚è’Z‚¢‚Æ‚«
+
+sw: jdkjd
+sw idx: 0
+orgTarget: dk
+resultdata: 0,j,d,k,j,d,k,j,d,k,j,
+head: -1
+idx: 1
+
+ˆê’v‚ ‚è
+‚©‚ÂAorgdata ‚ÌÅŒã‚Ü‚Å‚½‚Ç‚èI‚í‚Á‚½‚Æ‚«
+‚©‚ÂAorgtarget‚ªlimit‚æ‚è’Z‚¢‚Æ‚«
+input string: jdkjdkjdkjdk
+lzss compressed: 0,j,d,k,j,d,k,j,d,k,j,d,k,

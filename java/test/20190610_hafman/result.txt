@@ -1,0 +1,44 @@
+orginal string: orgStr: yyuuudkkkk
+sorted: dkkkkuuuyy
+uniq  : dkuy,1 4 3 2 
+sorted: k u y d ,4 3 2 1 
+org strs: k u y d 
+org Ints: 4 3 2 1 
+org strs: k u yd 
+org Ints: 4 3 3 
+org strs: uyd k 
+org Ints: 6 4 
+k 1
+u 00
+y 010
+d 011
+orgstrsub: y
+tmpstr: 010
+tmpsb: 010
+orgstrsub: y
+tmpstr: 010
+tmpsb: 010010
+orgstrsub: u
+tmpstr: 00
+tmpsb: 01001000
+orgstrsub: u
+tmpstr: 00
+tmpsb: 0100100000
+orgstrsub: u
+tmpstr: 00
+tmpsb: 010010000000
+orgstrsub: d
+tmpstr: 011
+tmpsb: 010010000000011
+orgstrsub: k
+tmpstr: 1
+tmpsb: 0100100000000111
+orgstrsub: k
+tmpstr: 1
+tmpsb: 01001000000001111
+orgstrsub: k
+tmpstr: 1
+tmpsb: 010010000000011111
+orgstrsub: k
+tmpstr: 1
+tmpsb: 0100100000000111111
