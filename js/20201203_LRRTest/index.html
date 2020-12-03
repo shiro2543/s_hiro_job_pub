@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=647,height=347,initia-scale=1">
+    <title>LifeRhythmRecord</title>
+    <link rel="stylesheet" href="css/sanitize.css">
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            overflow: hidden;
+        }
+    </style>
+    <!--<link rel="stylesheet" href="css/calender.css">-->
+</head>
+
+<body>
+    <div id="main_title"></div>
+    <div id="saveBar"></div>
+
+    <!--leftMenu-->
+    <div id="left_menu"></div>
+
+    <!--infoPiece-->
+    <div id="infoPieceTitle"></div>
+    <div id="timeRuler"></div>
+    <div id="rhythmGraph"></div>
+    <div id="infoSetter"></div>
+
+    <!--rightMenu-->
+    <div id="rightMenu"></div>
+
+    <script src="00_import.js"></script>
+    <script>
+
+        //レイアウト値
+        var titleHeight = 70;
+
+        var leftMenuWidth = 200;
+        var leftMenuHeight = document.body.clientHeight - titleHeight;
+
+        var rightMenuWidth = 400;
+
+        var timeRulerWidth = 50;
+        //var rhythmGraphWidth = 300;
+        var rhythmGraphWidth = document.body.clientWidth - leftMenuWidth - timeRulerWidth - rightMenuWidth;
+        var infoPieceTitleHeight = 30;
+        var rhythmGraphHeight = document.body.clientHeight - titleHeight - infoPieceTitleHeight;
+
+        var infoSetterWidth = 300;
+        var infoSetterHeight = 200;
+        var infoSetterClockRadius = 100;
+        var infoSetterBubbleShiftFromRhythmGraph = null;
+        if (rhythmGraphWidth > infoSetterWidth) {
+            infoSetterBubbleShiftFromRhythmGraph = rhythmGraphWidth - infoSetterWidth;
+        } else {
+            infoSetterBubbleShiftFromRhythmGraph = 0;
+        }
+
+        var minutePerScale = 60;
+        var scale_quantity = (24 * 60) / minutePerScale;
+        var scale_height = Math.floor(rhythmGraphHeight / scale_quantity);
+        var fPResizeFrameLineWidth = 0.6 * scale_height;
+
+
+        //-----//
+        //title//
+        //-----//
+        var mt = new MainTitle(document.querySelector('#main_title'), '生活リズムシート', titleHeight);
+
+        //-------//
+        //saveBar//
+        //-------//
+        var saveBar = new SaveBar(document.querySelector('#saveBar'), document.body.clientWidth / 8, titleHeight / 3);
+        saveBar.style.position = 'absolute';
+        saveBar.style.left = document.body.clientWidth * 7 / 8 + 'px';
+        saveBar.style.top = titleHeight * 2 / 3 + 'px';
+
+        //--------//
+        //leftMenu//
+        //--------//
+        var leftMenu = new ExpandMenu(document.querySelector('#left_menu'), leftMenuWidth, leftMenuHeight, infoPieceTitleHeight, 'hidden');
+        var leftMenuStyleObj = {
+            position: 'absolute',
+            left: 0 + 'px',
+            top: titleHeight + 'px',
+            backgroundColor: 'lightgreen',
+        }
+        styleObjApply(leftMenu, leftMenuStyleObj);
+        var cal = document.createElement('div');
+        var cal_menu_title = 'カレンダー';
+        leftMenu.expandMenu.append(cal_menu_title, cal);
+        cal = new Calender(cal, 0, 0, leftMenuWidth, leftMenuWidth);
+        //最初は閉じるなら次の行をコメントイン
+        //leftMenu.expandMenu.childDOMs.etabs[cal_menu_title].etab.clickEventCloseFunc();
+
+
+        //---------//
+        //infoPiece//
+        //---------//
+        var infoPieceTitle = document.querySelector('#infoPieceTitle');
+        new InfoPieceTitle(infoPieceTitle, rhythmGraphWidth, infoPieceTitleHeight);
+        infoPieceTitle.infoPieceTitle.setValues(cal.calender.getDate());
+
+        var tagList = ['睡眠', '食事', 'シャワー', '入浴', '余暇活動', 'その他'];
+        var tagColorList = {
+            '睡眠': 'lightblue',
+            '食事': 'orange',
+            'シャワー': 'lightgreen',
+            '入浴': 'green',
+            '余暇活動': 'pink',
+            'その他': 'lightgray',
+        }
+
+        //DomActivationController ※変数名はこれで固定
+        var dacontroller = new DOMActivationController();
+
+        var layoutStyleObj = {
+            timeRuler: {
+                position: 'absolute',
+                left: leftMenuWidth + 'px',
+                top: titleHeight + 'px',
+                //width: timeRulerWidth + 'px',
+                //height: (document.body.clientHeight - titleHeight) + 'px',
+            },
+            moveAreaDOM: {
+                position: 'absolute',
+                backgroundColor: 'white',
+                //left: leftMenuWidth + timeRulerWidth + 'px',
+                //top: titleHeight + 'px',
+                //width: rhythmGraphWidth + 'px',
+                //height: (document.body.clientHeight - titleHeight) + 'px',
+            },
+            infoSetter: {
+                position: 'absolute'
+            }
+        }
+
+        var timeRuler = document.querySelector('#timeRuler');
+        styleObjApply(timeRuler, layoutStyleObj.timeRuler);
+        timeRuler = new TimeRuler(timeRuler, timeRulerWidth, rhythmGraphHeight, minutePerScale);
+        timeRuler.timeRuler.moveCoordinate(leftMenuWidth, titleHeight + infoPieceTitleHeight);
+
+
+        //MoveAreaDOM test ※MovableFP/DragResizableFP/...には必須、変数名もこれで固定
+        var moveAreaDOM = document.querySelector('#rhythmGraph');
+        styleObjApply(moveAreaDOM, layoutStyleObj.moveAreaDOM);
+        moveAreaDOM = new MoveAreaDOM(moveAreaDOM, moveAreaDOM.clientWidth, moveAreaDOM.clientHeight);
+        moveAreaDOM = new AreaCreateFP(moveAreaDOM, fPResizeFrameLineWidth);
+        moveAreaDOM = new AreaAdjustScale(moveAreaDOM, minutePerScale);
+        moveAreaDOM.areaAdjustScale.resize(rhythmGraphWidth, rhythmGraphHeight);
+        moveAreaDOM.moveAreaDOM.moveCoordinate(leftMenuWidth + timeRulerWidth, titleHeight + infoPieceTitleHeight);
+
+        var infoSetterBubble = document.querySelector('#infoSetter');
+        infoSetterBubble = new InfoSetterBubble(infoSetter, infoSetterWidth, infoSetterHeight, infoSetterClockRadius, tagList, tagColorList, minutePerScale);
+        infoSetterBubble.infoSetterBubble.moveCoordinate(leftMenuWidth + timeRulerWidth + infoSetterBubbleShiftFromRhythmGraph, titleHeight + moveAreaDOM.areaAdjustScale.data.scale_height / 2);
+        infoSetterBubble.style.zIndex = 1000;
+
+        //---------//
+        //RightMenu//
+        //---------//
+        var weatherList = {
+            'rainbow': {
+                value: 6,
+                filePath: './img/6_rainbow.png',
+            },
+            'sunny': {
+                value: 5,
+                filePath: './img/5_sunny.png',
+            },
+            'sunnyAndCloudy': {
+                value: 4,
+                filePath: './img/4_sunnyAndCloudy.png',
+            },
+            'cloudy': {
+                value: 3,
+                filePath: './img/3_cloudy.png',
+            },
+            'rainy': {
+                value: 2,
+                filePath: './img/2_rainy.png',
+            },
+            'snowing': {
+                value: 1,
+                filePath: './img/1_snowing.png',
+            },
+        }
+        var rightMenu = document.querySelector('#rightMenu');
+        new RightMenu(rightMenu, rightMenuWidth, document.body.clientHeight - titleHeight, infoPieceTitleHeight);
+        var rightMenuStyle = {
+            position: 'absolute',
+            right: 0,
+            top: titleHeight + 'px',
+            backgroundColor: 'lightgreen',
+        }
+        styleObjApply(rightMenu, rightMenuStyle);
+
+        var getYMD = function(date) {
+            return {
+                year: date.getFullYear(),
+                month: date.getMonth() + 1,
+                date: date.getDate(),
+            }
+        }
+
+        var today = getYMD(new Date());
+        downloadInfo(today);
+        console.log('index.html: all init completed.');
+    </script>
+</body>
+
+</html>
