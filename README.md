@@ -5,4 +5,5 @@
 ### JavaScript
 ### PHP
 ### SQL
+### Python
 ### ※全て独学です
