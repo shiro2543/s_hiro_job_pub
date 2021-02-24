@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=640">
+    <title>LifeRhythmRecord</title>
+    <link rel="stylesheet" href="css/sanitize.css">
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main_title"></div>
+    <div id="saveBar"></div>
+
+    <!--leftMenu-->
+    <div id="left_menu"></div>
+
+    <!--infoPiece-->
+    <div id="infoPieceTitle"></div>
+    <div id="timeRuler"></div>
+    <div id="rhythmGraph"></div>
+    <div id="infoSetter"></div>
+
+    <!--rightMenu-->
+    <div id="rightMenu"></div>
+
+    <script src="00_import.js"></script>
+    <script>
+        //初期レイアウト値
+        var tempWindowWidth = 1280;
+        var tempWindowHeight = 607;
+        var scaleRate = {
+            width: window.innerWidth / tempWindowWidth,
+            height: window.innerHeight / tempWindowHeight
+        }
+
+        var leftMenuWidth = 200 * scaleRate.width;
+        var rightMenuWidth = 400 * scaleRate.width;
+        var timeRulerWidth = 50 * scaleRate.width;
+        var infoSetterWidth = 300 * scaleRate.width;
+        var titleHeight = 70 * scaleRate.height;
+        var infoPieceTitleHeight = 30 * scaleRate.height;
+        var infoSetterHeight = 200 * scaleRate.height;
+        var infoSetterClockRadius = 100 * Math.min(scaleRate.width, scaleRate.height);
+
+        //その他設定値
+        var minutePerScale = 60;    //枠ごとの分数
+
+        //計算される値
+        var leftMenuHeight = window.innerHeight - titleHeight;
+        var rhythmGraphWidth = window.innerWidth - leftMenuWidth - timeRulerWidth - rightMenuWidth;
+        var rhythmGraphHeight = window.innerHeight - titleHeight - infoPieceTitleHeight;
+
+        //計算される値
+        var scale_quantity = (24 * 60) / minutePerScale;
+        var scale_height = Math.floor(rhythmGraphHeight / scale_quantity);
+        var fPResizeFrameLineWidth = 0.6 * scale_height;
+
+        //infosetter位置調整
+        var infoSetterBubbleShiftFromRhythmGraph = null;
+        if (rhythmGraphWidth > infoSetterWidth) {
+            infoSetterBubbleShiftFromRhythmGraph = rhythmGraphWidth - infoSetterWidth;
+        } else {
+            infoSetterBubbleShiftFromRhythmGraph = 0;
+        }
+
+        //-----//
+        //title//
+        //-----//
+        var mt = new MainTitle(document.querySelector('#main_title'), '生活リズム記録', titleHeight);
+
+        //-------//
+        //saveBar//
+        //-------//
+        var saveBar = new SaveBar(document.querySelector('#saveBar'), window.innerWidth / 8, titleHeight / 3);
+        saveBar.style.position = 'absolute';
+        saveBar.style.left = window.innerWidth * 7 / 8 + 'px';
+        saveBar.style.top = titleHeight * 2 / 3 + 'px';
+
+        //--------//
+        //leftMenu//
+        //--------//
+        var leftMenu = new ExpandMenu(document.querySelector('#left_menu'), leftMenuWidth, leftMenuHeight, infoPieceTitleHeight, 'hidden');
+        var leftMenuStyleObj = {
+            position: 'absolute',
+            left: 0 + 'px',
+            top: titleHeight + 'px',
+            backgroundColor: 'lightgreen',
+        }
+        styleObjApply(leftMenu, leftMenuStyleObj);
+        var cal = document.createElement('div');
+        var cal_menu_title = 'カレンダー';
+        leftMenu.expandMenu.append(cal_menu_title, cal);
+        cal = new Calender(cal, 0, 0, leftMenuWidth, leftMenuWidth);
+        //最初は閉じるなら次の行をコメントイン
+        //leftMenu.expandMenu.childDOMs.etabs[cal_menu_title].etab.clickEventCloseFunc();
+
+
+        //---------//
+        //infoPiece//
+        //---------//
+        var infoPieceTitle = document.querySelector('#infoPieceTitle');
+        new InfoPieceTitle(infoPieceTitle, rhythmGraphWidth, infoPieceTitleHeight);
+        infoPieceTitle.infoPieceTitle.setValues(cal.calender.getDate());
+
+        var tagList = ['睡眠', '食事', 'シャワー', '入浴', '余暇活動', 'その他'];
+        var tagColorList = {
+            '睡眠': 'lightblue',
+            '食事': 'orange',
+            'シャワー': 'lightgreen',
+            '入浴': 'green',
+            '余暇活動': 'pink',
+            'その他': 'lightgray',
+        }
+
+        //DomActivationController ※変数名はこれで固定
+        var dacontroller = new DOMActivationController();
+
+        var layoutStyleObj = {
+            timeRuler: {
+                position: 'absolute',
+                left: leftMenuWidth + 'px',
+                top: titleHeight + 'px',
+                //width: timeRulerWidth + 'px',
+                //height: (window.innerHeight - titleHeight) + 'px',
+            },
+            moveAreaDOM: {
+                position: 'absolute',
+                backgroundColor: 'white',
+                //left: leftMenuWidth + timeRulerWidth + 'px',
+                //top: titleHeight + 'px',
+                //width: rhythmGraphWidth + 'px',
+                //height: (window.innerHeight - titleHeight) + 'px',
+            },
+            infoSetter: {
+                position: 'absolute'
+            }
+        }
+
+        var timeRuler = document.querySelector('#timeRuler');
+        styleObjApply(timeRuler, layoutStyleObj.timeRuler);
+        timeRuler = new TimeRuler(timeRuler, timeRulerWidth, rhythmGraphHeight, minutePerScale);
+        timeRuler.timeRuler.moveCoordinate(leftMenuWidth, titleHeight + infoPieceTitleHeight);
+
+
+        //MoveAreaDOM test ※MovableFP/DragResizableFP/...には必須、変数名もこれで固定
+        var moveAreaDOM = document.querySelector('#rhythmGraph');
+        styleObjApply(moveAreaDOM, layoutStyleObj.moveAreaDOM);
+        moveAreaDOM = new MoveAreaDOM(moveAreaDOM, moveAreaDOM.clientWidth, moveAreaDOM.clientHeight);
+        moveAreaDOM = new AreaCreateFP(moveAreaDOM, fPResizeFrameLineWidth);
+        moveAreaDOM = new AreaAdjustScale(moveAreaDOM, minutePerScale);
+        moveAreaDOM.areaAdjustScale.resize(rhythmGraphWidth, rhythmGraphHeight);
+        moveAreaDOM.moveAreaDOM.moveCoordinate(leftMenuWidth + timeRulerWidth, titleHeight + infoPieceTitleHeight);
+
+        var infoSetterBubble = document.querySelector('#infoSetter');
+        infoSetterBubble = new InfoSetterBubble(infoSetter, infoSetterWidth, infoSetterHeight, infoSetterClockRadius, tagList, tagColorList, minutePerScale);
+        infoSetterBubble.infoSetterBubble.moveCoordinate(leftMenuWidth + timeRulerWidth + infoSetterBubbleShiftFromRhythmGraph, titleHeight + moveAreaDOM.areaAdjustScale.data.scale_height / 2);
+        infoSetterBubble.style.zIndex = 1000;
+
+        //---------//
+        //RightMenu//
+        //---------//
+        var weatherList = {
+            'rainbow': {
+                value: 6,
+                filePath: './img/6_rainbow.png',
+            },
+            'sunny': {
+                value: 5,
+                filePath: './img/5_sunny.png',
+            },
+            'sunnyAndCloudy': {
+                value: 4,
+                filePath: './img/4_sunnyAndCloudy.png',
+            },
+            'cloudy': {
+                value: 3,
+                filePath: './img/3_cloudy.png',
+            },
+            'rainy': {
+                value: 2,
+                filePath: './img/2_rainy.png',
+            },
+            'snowing': {
+                value: 1,
+                filePath: './img/1_snowing.png',
+            },
+        }
+        var rightMenu = document.querySelector('#rightMenu');
+        new RightMenu(rightMenu, rightMenuWidth, window.innerHeight - titleHeight, infoPieceTitleHeight);
+        var rightMenuStyle = {
+            position: 'absolute',
+            left: (leftMenuWidth + timeRulerWidth + rhythmGraphWidth) + 'px',
+            top: titleHeight + 'px',
+            backgroundColor: 'lightgreen',
+        }
+        styleObjApply(rightMenu, rightMenuStyle);
+
+        var getYMD = function (date) {
+            return {
+                year: date.getFullYear(),
+                month: date.getMonth() + 1,
+                date: date.getDate(),
+            }
+        }
+
+        var today = getYMD(new Date());
+        downloadInfo(today);
+        console.log('index.html: all init completed.');
+
+        //resize
+        var resizeAll = function () {
+            mt.resize
+        }
+
+        //以下、テスト用値設定
+
+        //テスト用日付指定
+        var testTargetDate = {
+            year: 2021,
+            month: 2,
+            date: 20
+        };
+        cal.calender.moveDate(testTargetDate);
+
+        //テスト用json
+        var testJSONTxt = "{\"calender\":{\"year\":2021,\"month\":2,\"date\":20},\"infoPiece\":[{\"title\":\"睡眠\",\"time\":{\"start\":{\"ampm\":\"am\",\"hour\":0,\"minute\":0},\"end\":{\"ampm\":\"am\",\"hour\":8,\"minute\":0}},\"tag\":\"睡眠\",\"comment\":\"\"},{\"title\":\"業務\",\"time\":{\"start\":{\"ampm\":\"am\",\"hour\":9,\"minute\":0},\"end\":{\"ampm\":\"pm\",\"hour\":0,\"minute\":0}},\"tag\":\"その他\",\"comment\":\"\"},{\"title\":\"pc学習・音楽鑑賞\",\"time\":{\"start\":{\"ampm\":\"pm\",\"hour\":9,\"minute\":0},\"end\":{\"ampm\":\"pm\",\"hour\":11,\"minute\":0}},\"tag\":\"余暇活動\",\"comment\":\"\"},{\"title\":\"睡眠\",\"time\":{\"start\":{\"ampm\":\"pm\",\"hour\":11,\"minute\":0},\"end\":{\"ampm\":\"am\",\"hour\":24,\"minute\":0}},\"tag\":\"睡眠\",\"comment\":\"\"},{\"title\":\"入浴\",\"time\":{\"start\":{\"ampm\":\"pm\",\"hour\":8,\"minute\":0},\"end\":{\"ampm\":\"pm\",\"hour\":9,\"minute\":0}},\"tag\":\"入浴\",\"comment\":\"\"},{\"title\":\"ギター練習@公園\",\"time\":{\"start\":{\"ampm\":\"pm\",\"hour\":7,\"minute\":0},\"end\":{\"ampm\":\"pm\",\"hour\":8,\"minute\":0}},\"tag\":\"余暇活動\",\"comment\":\"\"},{\"title\":\"帰宅・夕食\",\"time\":{\"start\":{\"ampm\":\"pm\",\"hour\":6,\"minute\":0},\"end\":{\"ampm\":\"pm\",\"hour\":7,\"minute\":0}},\"tag\":\"食事\",\"comment\":\"\"},{\"title\":\"移動\",\"time\":{\"start\":{\"ampm\":\"pm\",\"hour\":5,\"minute\":0},\"end\":{\"ampm\":\"pm\",\"hour\":6,\"minute\":0}},\"tag\":\"その他\",\"comment\":\"\"},{\"title\":\"朝食\",\"time\":{\"start\":{\"ampm\":\"am\",\"hour\":8,\"minute\":0},\"end\":{\"ampm\":\"am\",\"hour\":9,\"minute\":0}},\"tag\":\"食事\",\"comment\":\"\"}],\"rightMenu\":{\"sleepTime\":\"8\",\"feelingAM\":\"sunny\",\"feelingPM\":null,\"breakfast\":{\"point\":{\"mainDish\":\"\",\"subDish\":\"\",\"stapleFood\":\"\",\"milk\":\"\",\"fruits\":\"\"},\"detail\":\"\"},\"lunch\":{\"point\":{\"mainDish\":\"\",\"subDish\":\"\",\"stapleFood\":\"\",\"milk\":\"\",\"fruits\":\"\"},\"detail\":\"\"},\"dinner\":{\"point\":{\"mainDish\":\"\",\"subDish\":\"\",\"stapleFood\":\"\",\"milk\":\"\",\"fruits\":\"\"},\"detail\":\"\"},\"medicine\":{\"value\":\"OK\",\"comment\":\"\"},\"comment\":\"\"}}";
+
+        //テスト用json読込
+        restoreValuesJSON(testJSONTxt);
+
+
+        //テスト用にrightmenuを開いた状態に
+        rightMenu.expandMenu.childDOMs.etabs["睡眠"].etab.clickEventOpenFunc();
+        rightMenu.expandMenu.childDOMs.etabs["気分(AM)"].etab.clickEventOpenFunc();
+
+        //テスト用にinfopieceを編集途中の状態に
+        dacontroller.deactivateAllListener();
+        infoSetterBubble.infoSetterBubble.appearAndStartOperateFP(moveAreaDOM.areaCreateFP.childDOMs.fPList[0]);
+
+    </script>
+</body>
+
+</html>

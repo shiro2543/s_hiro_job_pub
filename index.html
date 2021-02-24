@@ -1,11 +1,110 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width">
-  <title>トップページ</title>
-</head>
-<body>
-  <h1>トップページ</h1>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <title>トップページ</title>
+        <link rel="stylesheet" href="index_files/sanitize.css">
+        <style>
+            #pageTitle {
+                color: white;
+                background-color: green;
+            }
+            li {
+                margin-bottom: 10px;
+            }
+            .li_title {
+                font-size: 22px;
+                font-weight: bold;
+            }
+            img {
+                width: 50%;
+                margin: 5px;
+                border: 5px solid lightgray;
+                border-radius: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1 id="pageTitle">トップページ</h1>
+        </header>
+        <section id="works">
+            <h2>作品</h2>
+            <ol>
+                <hr>
+                <li>
+                    <div class="li_title">生活リズムシート</div>
+                    <a href="https://shiro2543.github.io/s_hiro_job_pub/js/lifeRhythmRecord/index.html">作品へのリンク</a><br>
+                    <h3>概要</h3>
+                    <p>
+                        精神疾患の治療方法の一つである、社会リズム療法。<br>
+                        その手段の一つとして用いられる生活管理表の一例です。<br>
+                        通常紙で行うものをJavaScriptを用いてweb電子化を試みました。<br>
+                    </p>
+                    <h3>使用した技術</h3>
+                    <p>
+                        JavaScript / PHP / MySQL
+                    </p>
+                    <h3>力を入れたところ・苦労したところ</h3>
+                    <ul>
+                        <li>
+                            全てネイティブJavaScriptで、勉強しながら書いていったところ。
+                        </li>
+                        <li>
+                            一日の行動履歴の入力にあたって、作成後のドラッグによる予定の編集を可能にしたところ。<br>
+                            行動履歴の編集用の窓を開かなくてもドラッグによって時間を延長・短縮したり、長さはそのままに移動することができる。<br>
+                            <img src="index_files/cap_dragMove.png">
+                            <img src="index_files/cap_dragResize.png">
+                        </li>
+                        <li>
+                            行動履歴の編集用の窓において、時間の入力にテキスト入力でなく時計上でのクリックを可能にしたところ。
+                        </li>
+                    </ul>
+                    <h3>今後の編集予定</h3>
+                    <ul>
+                        <li>
+                            入力したデータを元に、睡眠時間や気分、食事のポイントをグラフ化して可視化し、
+                            モニタリングに活用したい。
+                        </li>
+                        <li>ウィンドウリサイズに対応させたい。</li>
+                        <li>AWS等のクラウドサーバを利用し、DB保存機能も含めたweb公開を行いたい。</li>
+                    </ul>
+                    <h3>簡単な操作方法</h3>
+                    <img src="index_files/cap_wholeImage.png">
+
+                    <h3>注意</h3>
+                    <p>
+                        githubで試験的に公開するにあたってphpを用いたmysqlデータベースへの保存機能はカットしています。<br>
+                        そのため、日付移動すると前のデータが消えてしまいます(本来はデータベースから保存データを取得できます。<br>
+                        参考としてupload.phpとdownload.phpを載せていますが、js/99_dataLoad.jsでコメントアウトして無効化しています。)<br>
+                        ※完全なものの公開は現在準備中です。準備ができ次第こちらにリンクを公開します。
+                    </p>
+                </li>
+                <hr>
+                <li>
+                    <div class="li_title">リバーシ</div>
+                    <a href="https://shiro2543.github.io/s_hiro_job_pub/js/reversi/reversi.html">作品へのリンク</a>
+                    <h3>概要</h3>
+                    <p>リバーシを自分なりにコードを考えて作成。</p>
+                    <h3>使用した技術</h3>
+                    <p>
+                        JavaScript
+                    </p>
+                    <h3>簡単な仕様について</h3>
+                    <ul>
+                        <li>クリックでゲームが進行する</li>
+                        <li>プレイヤーは白</li>
+                        <li>3回まで間違えて(操作できないマスをクリックして)よい</li>
+                        <li>3回間違えるか、正しい操作をすると黒(オート)に切り替わり、次のクリックで黒が操作してくる</li>
+                        <li>繰り返していって、連続で両者が3回連続で操作できなくなった時点で決着</li>
+                    </ul>
+                    <h3>今後の編集予定</h3>
+                    <ul>
+                        <li>ゲーム進行をよりスマートに変えたい。現状だとクリックでしか進行できず、メッセージも中途半端な英語になっているため</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
+    </body>
 </html>
