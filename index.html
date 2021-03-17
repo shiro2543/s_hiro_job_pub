@@ -23,6 +23,9 @@
                 border: 5px solid lightgray;
                 border-radius: 5px;
             }
+            .smallImage {
+                width: 40%;
+            }
             a {
                 font-size: 16px;
             }
@@ -48,35 +51,37 @@
                     <p>
                         JavaScript / PHP / MySQL
                     </p>
+                    <h3>簡単な操作方法</h3>
+                    <img src="index_files/cap_wholeImage.png">
                     <h3>力を入れたところ・苦労したところ</h3>
                     <ul>
                         <li>
-                            一日の行動履歴の入力にあたって、作成後のドラッグによる予定の編集を可能にしたところ。<br>
-                            行動履歴の編集用の窓を開かなくてもドラッグによって時間を延長・短縮したり、長さはそのままに移動することができる。<br>
+                            一日の行動履歴の入力にあたって、作成後のドラッグによる予定の編集を可能にしました。<br>
+                            行動履歴の編集用の窓を開かなくてもドラッグによって時間を延長・短縮したり、長さはそのままに移動することができます。<br>
                             <img src="index_files/cap_dragMove.png">
                             <img src="index_files/cap_dragResize.png">
                         </li>
                         <li>
-                            行動履歴の編集用の窓において、時間の入力にテキスト入力でなく時計上でのクリックを可能にしたところ。
+                            行動履歴の編集用の窓において、時間の入力にテキスト入力でなく時計上でのクリックを可能にしました。
+                            <img class="smallImage" src="index_files/cap_clockSet.png">
                         </li>
                     </ul>
                     <h3>今後の編集予定</h3>
                     <ul>
                         <li>
-                            入力したデータを元に、睡眠時間や気分、食事のポイントをグラフ化して可視化し、
-                            モニタリングに活用したい。
+                            入力したデータを元に、睡眠時間や気分、食事のポイントをグラフ化して可視化し、モニタリングに活用する。<br>
+                            これがコンテンツ開発の動機でもあります。
                         </li>
-                        <li>ウィンドウリサイズに対応させたい。</li>
-                        <li>AWS等のクラウドサーバを利用し、DB保存機能も含めたweb公開を行いたい。</li>
+                        <li>ウィンドウリサイズに対応させる。</li>
+                        <li>
+                            AWS等のクラウドサーバを利用し、DB保存機能も含めたweb公開を行う。<br>
+                        </li>
                     </ul>
-                    <h3>簡単な操作方法</h3>
-                    <img src="index_files/cap_wholeImage.png">
 
                     <h3>備考</h3>
                     <p>
-                        githubで試験的に公開するにあたってphpを用いたmysqlデータベースへの保存機能はカットしています。<br>
-                        そのため、日付移動すると前のデータが消えてしまいます(本来はデータベースから保存データを取得できます。
-                        参考としてupload.phpとdownload.phpを載せていますが、js/99_dataLoad.jsでコメントアウトして無効化しています。)<br>
+                        githubで試験的に公開するにあたってmysqlデータベースへの保存機能はカットしています。<br>
+                        そのため、日付移動すると前のデータが消えてしまいます。<br>
                         完全なものの公開は現在準備中です。準備ができ次第こちらにリンクを公開します。
                     </p>
                 </li>
@@ -87,9 +92,19 @@
                     <a style="font-size: 16px;" href="https://github.com/shiro2543/s_hiro_job_pub/blob/master/java/reversi.war">レポジトリへのリンク</a><br>
                     サーバ展開後のアクセスURL: http://[host][:port]/reversi/ControlMain
                     <h3>概要</h3>
-                    <p>リバーシ</p>
+                    <p>テーブルゲームのリバーシをJavaで再現を試みました。</p>
                     <h3>使用した技術</h3>
                     <p>Java</p>
+                    <h3>力を入れたところ・苦労したところ</h3>
+                    <ul>
+                        <li>Javaの学習を兼ねていたため、オブジェクト指向を意識して作成しました。</li>
+                        <li>MVCモデルのModelについて、リバーシのルールからプレイヤーを独立させ、プレイヤーの実装について簡単に拡張できるように試みました。</li>
+                    </ul>
+                    <h3>今後の編集予定</h3>
+                    <ul>
+                        <li>作成時に不足していたhtml/CSSの知識を取り入れてjspファイル等スマートに利用する。</li>
+                        <li>その他アルゴリズムや機械学習を取り入れてプレイヤーモデルを拡張する。</li>
+                    </ul>
                 </li>
                 <hr>
                 <li>
@@ -97,7 +112,7 @@
                     <a href="https://shiro2543.github.io/s_hiro_job_pub/js/reversi/reversi.html">作品へのリンク</a><br>
                     <a href="https://github.com/shiro2543/s_hiro_job_pub/tree/master/js/reversi">レポジトリへのリンク</a>
                     <h3>概要</h3>
-                    <p>リバーシ</p>
+                    <p>テーブルゲームのリバーシをJavaScriptで再現を試みました。</p>
                     <h3>使用した技術</h3>
                     <p>
                         JavaScript
@@ -112,7 +127,8 @@
                     </ul>
                     <h3>今後の編集予定</h3>
                     <ul>
-                        <li>ゲーム進行をよりスマートに変えたい。現状だとクリックでしか進行できず、メッセージも中途半端な英語になっているため</li>
+                        <li>ゲーム進行をよりスマートに変える。<br>
+                            現状だとクリックでしか進行できず、メッセージも中途半端なため</li>
                     </ul>
                 </li>
             </ol>
